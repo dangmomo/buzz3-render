@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Show</title>
+    <style>
+        /* Đặt font, màu nền và căn giữa toàn trang */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3b82f6, #9333ea);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            margin: 0;
+        }
+
+        /* Container chính */
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px 60px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(6px);
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            letter-spacing: 1px;
+        }
+
+        /* Danh sách vai trò */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 15px 0;
+        }
+
+        /* Nút chọn vai trò */
+        a {
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(90deg, #2563eb, #9333ea);
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        a:hover {
+            transform: scale(1.08);
+            background: linear-gradient(90deg, #1e40af, #7e22ce);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Hiệu ứng ánh sáng */
+        @keyframes glow {
+            from { box-shadow: 0 0 10px #fff; }
+            to { box-shadow: 0 0 25px #ff0; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>🎮 Chọn vai trò của bạn 🎯</h2>
+    <ul>
+        <li><a href="admin.jsp">🧩 Admin</a></li>
+        <li><a href="player1.jsp">👤 Người chơi 1</a></li>
+        <li><a href="player2.jsp">👤 Người chơi 2</a></li>
+    </ul>
+</div>
+</body>
+</html>

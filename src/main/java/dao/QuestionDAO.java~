@@ -1,0 +1,41 @@
+package dao;
+
+import model.Question;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class QuestionDAO {
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/buzz";
+    private static final String JDBC_USER = "root";
+    private static final String JDBC_PASSWORD = "root";
+
+    public List<Question> getQuestionsByRound(int round) {
+        List<Question> questions = new ArrayList<>();
+        String sql = "SELECT * FROM questions WHERE round = ?";
+
+        try (Connection conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, round);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                questions.add(new Question(
+                        rs.getInt("id"),
+                        rs.getString("category"),
+                        rs.getString("question"),
+                        rs.getString("optionA"),
+                        rs.getString("optionB"),
+                        rs.getString("optionC"),
+                        rs.getString("optionD"),
+                        rs.getString("correctAnswer"),
+                        rs.getInt("points")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return questions;
+    }
+}

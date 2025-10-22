@@ -1,0 +1,42 @@
+<%@ page import="java.util.List" %>
+<%@ page import="model.Round1Question" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Danh sách câu hỏi - Vòng 1</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<h2>Danh sách câu hỏi - Vòng 1</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Câu hỏi</th>
+        <th>A</th>
+        <th>B</th>
+        <th>C</th>
+        <th>D</th>
+        <th>Điểm</th>
+    </tr>
+    <%
+        List<Round1Question> questions = (List<Round1Question>) request.getAttribute("questions");
+        for (Round1Question q : questions) {
+    %>
+    <tr>
+        <td><%= q.getId() %></td>
+        <td><%= q.getQuestion() %></td>
+        <td><%= q.getOptionA() %></td>
+        <td><%= q.getOptionB() %></td>
+        <td><%= q.getOptionC() %></td>
+        <td><%= q.getOptionD() %></td>
+        <td><%= q.getPoints() %></td>
+    </tr>
+    <% } %>
+</table>
+</body>
+</html>
