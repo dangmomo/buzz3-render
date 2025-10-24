@@ -195,6 +195,8 @@
             <% for (int i = 1; i <= 15; i++) { %>
             <button id="qBtn<%=i%>" class="question-btn" onclick="showQuestion(<%=i%>)"><%=i%></button>
             <% } %>
+            <!-- Nút Test cho bấm chuông thử -->
+            <button id="testBtn" class="question-btn" style="background-color:#f1c40f; color:black;" onclick="showTestQuestion()">Test</button>
         </div>
     </div>
 
@@ -419,6 +421,36 @@
             continueTimer30();
         }
     });
+</script>
+<script>
+    // Câu hỏi thử cho nút Test
+    const testQuestion = {
+        q: "Câu hỏi thử chuông: 2 + 2 = ?",
+        opts: ["A. 3","B. 4","C. 5","D. 6"],
+        a: "B. 4"
+    };
+
+    // Hàm hiển thị câu hỏi Test
+    function showTestQuestion() {
+        currentQuestion = null; // Không đánh dấu là câu hỏi chính
+
+        document.getElementById("questionListSection").style.display = "none";
+        document.getElementById("questionBox").style.display = "block";
+        document.getElementById("buzzerSection").style.display = "block";
+
+        // Hiển thị đồng hồ 30s
+        timer30Display.style.display = "flex";
+
+        document.getElementById("questionBox").querySelector("h2").innerText = "Câu hỏi Test";
+        document.getElementById("questionText").innerText = testQuestion.q;
+        document.getElementById("options").innerHTML = testQuestion.opts.join("<br>");
+        document.getElementById("answerBox").style.display = "none";
+        document.getElementById("showAnswerBtn").style.display = "inline-block";
+        document.getElementById("backBtn").style.display = "none";
+        document.getElementById("answerBox").innerText = "Đáp án đúng: " + testQuestion.a;
+
+        startTimer30();
+    }
 </script>
 </body>
 </html>
