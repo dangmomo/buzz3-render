@@ -133,7 +133,7 @@
             cursor: pointer;
         }
 
-        /* ================== 5s Timer (beside button) ================== */
+        /* ================== 5s Timer (beside buzzer) ================== */
         #timer5 {
             width: 110px;
             height: 110px;
@@ -218,14 +218,12 @@
         <p id="queue"></p>
 
         <div style="display:flex; align-items:center; justify-content:center; gap:20px;">
-            <%--            <button id="resetButton" class="action" onclick="resetBuzzer()">Xóa yêu cầu sai</button>--%>
             <div id="timer5">5</div>
         </div>
 
         <div id="hetGioMessage"><strong>Hết Giờ!</strong></div>
     </div>
 </div>
-<script> window.history.pushState({}, "", "****"); </script>
 
 <script>
     const questions = [
@@ -268,6 +266,8 @@
         hetGioMessage.style.display = "none";
         timer30Display.textContent = timeLeft30;
 
+        timer30Display.style.display = "flex";
+
         timer30 = setInterval(() => {
             if (queueElement.innerText.trim() !== "") {
                 pausedTime = timeLeft30;
@@ -295,12 +295,13 @@
                 clearInterval(timer5);
                 timer5Display.style.opacity = "0";
                 setTimeout(() => timer5Display.style.display = "none", 1000);
-                resetBuzzer(); // Gọi reset
+                resetBuzzer();
             } else timer5Display.textContent = --timeLeft5;
         }, 1000);
     }
 
     function continueTimer30() {
+        if (!isPaused) return;
         clearInterval(timer30);
         timeLeft30 = pausedTime;
         timerRunning30 = true;
@@ -358,9 +359,6 @@
         document.getElementById("questionBox").style.display = "block";
         document.getElementById("buzzerSection").style.display = "block";
 
-        // Hiển thị đồng hồ 30s
-        timer30Display.style.display = "flex";
-
         document.getElementById("questionBox").querySelector("h2").innerText = "Câu hỏi " + num;
         document.getElementById("questionText").innerText = q.q;
         document.getElementById("options").innerHTML = q.opts.join("<br>");
@@ -383,11 +381,10 @@
         document.getElementById("questionBox").style.display = "none";
         document.getElementById("buzzerSection").style.display = "none";
 
-        // Ẩn đồng hồ 30s
         timer30Display.style.display = "none";
-
         clearInterval(timer30);
         clearInterval(timer5);
+
         if (currentQuestion) {
             const btn = document.getElementById("qBtn" + currentQuestion);
             btn.classList.add("answered");
@@ -404,15 +401,9 @@
             queueElement.innerText = "";
             queueElement.style.backgroundColor = '#f39c12';
             previousColor = '#f39c12';
-
-            // Giữ trạng thái pause, chờ click vào 30s
-            if (isPaused) {
-                isPaused = true;
-            }
         });
     }
 
-    // Click vào #timer30 để tiếp tục đếm
     timer30Display.addEventListener("click", () => {
         if (isPaused) {
             isPaused = false;
