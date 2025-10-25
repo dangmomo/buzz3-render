@@ -35,16 +35,7 @@
             margin: 8px 0 20px;
         }
 
-        #questionButtons {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 25px;
-            justify-items: center;
-            margin-top: 20px;
-        }
-
         .question-btn {
-            background-color: #27ae60;
             border: none;
             color: white;
             font-size: 28px;
@@ -52,10 +43,9 @@
             width: 100px;
             height: 100px;
             cursor: pointer;
-            box-shadow: 0px 8px 20px rgba(39, 174, 96, 0.6);
             transition: 0.25s;
         }
-        .question-btn:hover { transform: scale(1.08); background-color: #2ecc71; }
+        .question-btn:hover { transform: scale(1.08); }
         .question-btn.answered {
             background-color: #e74c3c !important;
             cursor: not-allowed;
@@ -124,7 +114,7 @@
             color: white;
             font-size: 56px;
             font-weight: bold;
-            display: none; /* Mặc định ẩn */
+            display: none;
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 25px rgba(76, 175, 80, 0.6);
@@ -151,11 +141,9 @@
             margin-left: 20px;
         }
 
-        /* ================== HẾT GIỜ MESSAGE ================== */
         #hetGioMessage {
             display: none;
             margin-top: 30px;
-            font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
             font-size: 2.5em;
             color: #ff0000;
             background-color: #ffcccc;
@@ -183,19 +171,83 @@
             h2 { font-size: 36px; }
             table td { font-size: 24px; padding: 18px; }
         }
+
+        /* ======= CSS hiển thị phân chia 2 phần ======= */
+        #questionButtons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 25px;
+            justify-items: center;
+            margin-top: 20px;
+        }
+
+        .section-title {
+            grid-column: span 5;
+            text-align: center;
+            font-weight: bold;
+            font-size: 22px;
+            color: #f1c40f;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+            margin-top: 15px;
+        }
+
+        .part1 {
+            background-color: #00CED1;
+            box-shadow: 0px 8px 20px rgba(0, 206, 209, 0.6);
+        }
+        .part1:hover { background-color: #20B2AA; }
+
+        .part2 {
+            background-color: #27ae60;
+            box-shadow: 0px 8px 20px rgba(39, 174, 96, 0.6);
+        }
+        .part2:hover { background-color: #2ecc71; }
+
+        /* ======= ẢNH ĐUỔI HÌNH BẮT CHỮ ======= */
+        #questionText {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        #questionText img {
+            width: 420px; /* bạn có thể chỉnh 350px hoặc 500px tùy kích thước màn hình */
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        #questionText img:hover {
+            transform: scale(1.05);
+        }
+
     </style>
 </head>
 <body>
 <div class="container">
     <div id="timer30">30</div>
 
+    <!-- ========== DANH SÁCH CÂU HỎI (ĐÃ CẬP NHẬT) ========== -->
     <div id="questionListSection">
         <h2>Danh sách câu hỏi</h2>
+
         <div id="questionButtons">
-            <% for (int i = 1; i <= 15; i++) { %>
-            <button id="qBtn<%=i%>" class="question-btn" onclick="showQuestion(<%=i%>)"><%=i%></button>
+            <div class="section-title">Phần chơi 1: Đuổi hình bắt chữ</div>
+
+            <% for (int i = 1; i <= 5; i++) { %>
+            <button id="qBtn<%=i%>" class="question-btn part1" onclick="showQuestion(<%=i%>)"><%=i%></button>
             <% } %>
-            <!-- Nút Test cho bấm chuông thử -->
+
+            <div class="section-title">Phần chơi 2: Trắc nghiệm thần tốc</div>
+
+            <% for (int i = 6; i <= 15; i++) { %>
+            <button id="qBtn<%=i%>" class="question-btn part2" onclick="showQuestion(<%=i%>)"><%=i - 5%></button>
+            <% } %>
+
             <button id="testBtn" class="question-btn" style="background-color:#f1c40f; color:black;" onclick="showTestQuestion()">Test</button>
         </div>
     </div>
@@ -206,12 +258,10 @@
             <tr><td id="questionText"></td></tr>
             <tr><td id="options" style="font-size:34px; line-height:1.8; text-align:left;"></td></tr>
         </table>
-
         <div>
             <button id="showAnswerBtn" class="action" onclick="showAnswer()">Hiện đáp án</button>
             <button id="backBtn" class="action" style="display:none; margin-left:12px;" onclick="goBack()">Quay lại</button>
         </div>
-
         <div id="answerBox" class="answer" style="display:none;"></div>
     </div>
 
@@ -220,10 +270,8 @@
         <p id="queue"></p>
 
         <div style="display:flex; align-items:center; justify-content:center; gap:20px;">
-            <%--            <button id="resetButton" class="action" onclick="resetBuzzer()">Xóa yêu cầu sai</button>--%>
             <div id="timer5">5</div>
         </div>
-
         <div id="hetGioMessage"><strong>Hết Giờ!</strong></div>
     </div>
 </div>
@@ -231,21 +279,119 @@
 
 <script>
     const questions = [
-        {q:"Thủ đô của Việt Nam là gì?",opts:["A. Hồ Chí Minh","B. Hà Nội","C. Đà Nẵng","D. Hải Phòng"],a:"B. Hà Nội"},
-        {q:"5 × 6 = ?",opts:["A. 30","B. 25","C. 35","D. 20"],a:"A. 30"},
-        {q:"Ai là người đầu tiên đặt chân lên Mặt Trăng?",opts:["A. Neil Armstrong","B. Yuri Gagarin","C. Buzz Aldrin","D. John Glenn"],a:"A. Neil Armstrong"},
-        {q:"Nguyên tố có ký hiệu 'O' là gì?",opts:["A. Vàng","B. Oxi","C. Bạc","D. Sắt"],a:"B. Oxi"},
-        {q:"Năm nhuận có bao nhiêu ngày?",opts:["A. 365","B. 366","C. 364","D. 367"],a:"B. 366"},
-        {q:"Trái Đất quay quanh Mặt Trời theo quỹ đạo gì?",opts:["A. Tròn","B. Elip","C. Vuông","D. Tam giác"],a:"B. Elip"},
-        {q:"Tác giả 'Truyện Kiều' là ai?",opts:["A. Nguyễn Trãi","B. Nguyễn Du","C. Hồ Xuân Hương","D. Tố Hữu"],a:"B. Nguyễn Du"},
-        {q:"Quốc gia có diện tích lớn nhất thế giới?",opts:["A. Mỹ","B. Trung Quốc","C. Nga","D. Canada"],a:"C. Nga"},
-        {q:"CPU là viết tắt của?",opts:["A. Central Processing Unit","B. Computer Power Unit","C. Core Processor Utility","D. Central Power Unit"],a:"A. Central Processing Unit"},
-        {q:"Hệ điều hành do Google phát triển?",opts:["A. iOS","B. Android","C. Windows","D. Linux"],a:"B. Android"},
-        {q:"π (pi) xấp xỉ bằng?",opts:["A. 2.14","B. 3.14","C. 3.41","D. 4.13"],a:"B. 3.14"},
-        {q:"Biểu tượng của Trung Quốc là?",opts:["A. Sư tử","B. Rồng","C. Gấu trúc","D. Hổ"],a:"C. Gấu trúc"},
-        {q:"Đơn vị đo cường độ dòng điện là?",opts:["A. Watt","B. Volt","C. Ampere","D. Ohm"],a:"C. Ampere"},
-        {q:"Nước tổ chức World Cup 2022?",opts:["A. Nga","B. Qatar","C. Brazil","D. Đức"],a:"B. Qatar"},
-        {q:"Einstein nổi tiếng với thuyết gì?",opts:["A. Tiến hoá","B. Tương đối","C. Lượng tử","D. Big Bang"],a:"B. Tương đối"}
+        // 5 câu đầu: Đuổi hình bắt chữ (mỗi câu 2 ảnh)
+        {
+            type: "picture",
+            images: [
+                "<%= request.getContextPath() %>/images/duoihinh1a.png",
+                "<%= request.getContextPath() %>/images/duoihinh1b.png"
+            ],
+            a: "Độc quyền"
+        },
+        {
+            type: "picture",
+            images: [
+                "<%= request.getContextPath() %>/images/duoihinh2a.png",
+                "<%= request.getContextPath() %>/images/duoihinh2b.png",
+                "<%= request.getContextPath() %>/images/duoihinh2c.png"
+            ],
+            a: "Độc quyền nhà nước"
+        },
+        {
+            type: "picture",
+            images: [
+                "<%= request.getContextPath() %>/images/duoihinh3a.png",
+                "<%= request.getContextPath() %>/images/duoihinh3b.png"
+            ],
+            a: "Cô la"
+        },
+        {
+            type: "picture",
+            images: [
+                "<%= request.getContextPath() %>/images/duoihinh4a.png",
+                "<%= request.getContextPath() %>/images/duoihinh4b.png"
+            ],
+            a: "Meta"
+        },
+        {
+            type: "picture",
+            images: [
+                "<%= request.getContextPath() %>/images/duoihinh5a.png",
+                "<%= request.getContextPath() %>/images/duoihinh5b.png"
+            ],
+            a: "Microsoft"
+        },
+
+        // 10 câu còn lại: Trắc nghiệm như cũ
+        {q:"Theo Kinh tế Chính trị Mác – Lênin, Cạnh tranh là gì?",
+            opts:["A. Là sự ganh đua giữa những người sản xuất hàng hóa nhằm thu được lợi nhuận cao hơn.",
+                "B. Là sự đấu tranh giai cấp giữa giai cấp tư sản và giai cấp vô sản.",
+                "C. Là sự tranh giành thị trường giữa các quốc gia.",
+                "D. Là sự hợp tác giữa các doanh nghiệp để tăng cường năng lực sản xuất."],
+            a:"A. Là sự ganh đua giữa những người sản xuất hàng hóa nhằm thu được lợi nhuận cao hơn."},
+
+        {q:"Quy luật cơ bản nào của sản xuất hàng hóa chi phối sự xuất hiện và vận động của cạnh tranh?",
+            opts:["A. Quy luật Cung – Cầu.",
+                "B. Quy luật Lưu thông tiền tệ.",
+                "C. Quy luật Giá trị.",
+                "D. Quy luật Tích lũy tư bản."],
+            a:"C. Quy luật Giá trị."},
+
+        {q:"Kết quả trực tiếp của Cạnh tranh trong nội bộ ngành là gì?",
+            opts:["A. Hình thành tỷ suất lợi nhuận bình quân.",
+                "B. Hình thành giá trị thị trường (giá trị xã hội).",
+                "C. Hình thành giá cả sản xuất.",
+                "D. Hình thành mức giá độc quyền."],
+            a:"B. Hình thành giá trị thị trường (giá trị xã hội)."},
+
+        {q:"Kết quả trực tiếp của Cạnh tranh ngoài ngành là gì?",
+            opts:["A. Hình thành tỷ suất giá trị thặng dư.",
+                "B. Hình thành tỷ suất lợi nhuận độc quyền.",
+                "C. Hình thành tỷ suất lợi nhuận bình quân.",
+                "D. Hình thành giá trị cá biệt."],
+            a:"C. Hình thành tỷ suất lợi nhuận bình quân."},
+
+        {q:"Đặc điểm cơ bản nhất đánh dấu sự chuyển biến từ chủ nghĩa tư bản cạnh tranh tự do sang giai đoạn độc quyền (Chủ nghĩa Đế quốc) là gì?",
+            opts:["A. Sự xuất hiện của lao động làm thuê.",
+                "B. Sự xuất hiện của giá trị thặng dư.",
+                "C. Sự thống trị của các tổ chức độc quyền trong đời sống kinh tế.",
+                "D. Sự phát triển của thương mại quốc tế."],
+            a:"C. Sự thống trị của các tổ chức độc quyền trong đời sống kinh tế."},
+
+        {q:"Ngày nay, hình thức độc quyền phổ biến nhất trong nền kinh tế thị trường là gì?",
+            opts:["A. Độc quyền tự nhiên (Natural Monopoly)",
+                "B. Độc quyền nhà nước",
+                "C. Độc quyền công nghệ (Tech Monopoly)",
+                "D. Độc quyền thương mại cổ truyền"],
+            a:"C. Độc quyền công nghệ (Tech Monopoly)"},
+
+        {q:"Tập đoàn nào sau đây thường được coi là ví dụ điển hình của “độc quyền mới” trong thời đại số?",
+            opts:["A. Toyota",
+                "B. Microsoft",
+                "C. Coca-Cola",
+                "D. Samsung"],
+            a:"D. Samsung"},
+
+        {q:"“Độc quyền nhà nước” trong điều kiện hiện nay chủ yếu thể hiện ở lĩnh vực nào?",
+            opts:["A. Sản xuất hàng tiêu dùng",
+                "B. Năng lượng, viễn thông và tài nguyên quốc gia",
+                "C. Thời trang và giải trí",
+                "D. Thương mại điện tử"],
+            a:"B. Năng lượng, viễn thông và tài nguyên quốc gia"},
+
+        {q:"Vai trò tích cực của chủ nghĩa tư bản trong lịch sử phát triển kinh tế thế giới là gì?",
+            opts:["A. Làm chậm tiến trình công nghiệp hóa",
+                "B. Thúc đẩy tiến bộ khoa học – kỹ thuật và năng suất lao động",
+                "C. Ngăn cản toàn cầu hóa kinh tế",
+                "D. Làm suy yếu nhà nước"],
+            a:"B. Thúc đẩy tiến bộ khoa học – kỹ thuật và năng suất lao động"},
+
+        {q:"Tại sao nhiều quốc gia vẫn duy trì doanh nghiệp nhà nước độc quyền trong một số lĩnh vực?",
+            opts:["A. Vì muốn tăng giá hàng hóa",
+                "B. Vì nhà nước không tin tưởng khu vực tư nhân",
+                "C. Vì cần đảm bảo an ninh, ổn định xã hội và lợi ích công cộng",
+                "D. Vì doanh nghiệp nhà nước luôn hiệu quả hơn tư nhân"],
+            a:"C. Vì cần đảm bảo an ninh, ổn định xã hội và lợi ích công cộng"}
     ];
 
     const beepSound = new Audio('<%= request.getContextPath() %>/music/beep.mp3');
@@ -297,7 +443,7 @@
                 clearInterval(timer5);
                 timer5Display.style.opacity = "0";
                 setTimeout(() => timer5Display.style.display = "none", 1000);
-                resetBuzzer(); // Gọi reset
+                resetBuzzer();
             } else timer5Display.textContent = --timeLeft5;
         }, 1000);
     }
@@ -359,13 +505,28 @@
         document.getElementById("questionListSection").style.display = "none";
         document.getElementById("questionBox").style.display = "block";
         document.getElementById("buzzerSection").style.display = "block";
-
-        // Hiển thị đồng hồ 30s
         timer30Display.style.display = "flex";
 
-        document.getElementById("questionBox").querySelector("h2").innerText = "Câu hỏi " + num;
-        document.getElementById("questionText").innerText = q.q;
-        document.getElementById("options").innerHTML = q.opts.join("<br>");
+        const qBox = document.getElementById("questionBox");
+        // qBox.querySelector("h2").innerText = "Câu hỏi " + num;
+
+        // Nếu là đuổi hình bắt chữ
+        if (q.type === "picture") {
+            qBox.querySelector("h2").innerText = "Câu hỏi " + num;
+            let imagesHtml = q.images.map(img => `<img src="${img}" style="width:440px;height:auto;border-radius:8px;">`).join('');
+            document.getElementById("questionText").innerHTML = `
+        <div style="display:flex;gap:20px;justify-content:center;align-items:center;">
+            ${imagesHtml}
+        </div>
+    `;
+            document.getElementById("options").innerHTML = "";
+        }
+        else {
+            qBox.querySelector("h2").innerText = "Câu hỏi " + (num - 5);
+            document.getElementById("questionText").innerText = q.q;
+            document.getElementById("options").innerHTML = q.opts.join("<br>");
+        }
+
         document.getElementById("answerBox").style.display = "none";
         document.getElementById("showAnswerBtn").style.display = "inline-block";
         document.getElementById("backBtn").style.display = "none";
@@ -384,8 +545,6 @@
         document.getElementById("questionListSection").style.display = "block";
         document.getElementById("questionBox").style.display = "none";
         document.getElementById("buzzerSection").style.display = "none";
-
-        // Ẩn đồng hồ 30s
         timer30Display.style.display = "none";
 
         clearInterval(timer30);
@@ -406,15 +565,10 @@
             queueElement.innerText = "";
             queueElement.style.backgroundColor = '#f39c12';
             previousColor = '#f39c12';
-
-            // Giữ trạng thái pause, chờ click vào 30s
-            if (isPaused) {
-                isPaused = true;
-            }
+            if (isPaused) isPaused = true;
         });
     }
 
-    // Click vào #timer30 để tiếp tục đếm
     timer30Display.addEventListener("click", () => {
         if (isPaused) {
             isPaused = false;
