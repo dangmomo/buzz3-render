@@ -303,7 +303,7 @@
                 "<%= request.getContextPath() %>/images/duoihinh3a.png",
                 "<%= request.getContextPath() %>/images/duoihinh3b.png"
             ],
-            a: "Coca-cola"
+            a: "Cô la"
         },
         {
             type: "picture",
